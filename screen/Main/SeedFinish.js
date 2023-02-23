@@ -8,58 +8,93 @@ import {
 } from 'react-native';
 import styles from './style'
 import flower from './flower'
-import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { MMKV } from 'react-native-mmkv'
 export const storage = new MMKV()
 
-const SeedFinish = (props) => {
-    const isFocused = useIsFocused()
-    const navigation = useNavigation()
-    const { finishSeed, seedName, setfinishSeed, setSeedModalVisible} = props;
+import { createPOSTObject, createGETObject } from '../API/Network'
 
-    const [jsonUser,setJsonUser] = useState(storage.getString('user'))
-    const [userObject,setUserObject] = useState(JSON.parse(jsonUser))
+const SeedFinish = (props) => {
+    const { finishSeedVisible, setfinishSeedVisible } = props;
+
+    const [userObject, setUser] = useState({})
     
-    const caching = ()=>{
-    setJsonUser(storage.getString('user'))
-    setUserObject(JSON.parse(jsonUser))
+    useEffect(() => {
+        getUser()
+        console.log(userObject)
+    },[])
+
+    const getUser = async () => {
+        try {
+          const user = await JSON.parse(storage.getString('user'))
+          if(user !== null) {
+            console.log(user)
+            setUser(user)
+            return user
+          }
+        }
+        catch (e) {
+          console.error(e)
+        }
     }
 
-    useEffect(() => {caching()}, [isFocused]);
+    const gotoMoon = () => {
+        let data = {
+            uid:userObject.uid
+        }
+
+        createPOSTObject('flower/mv-flower', data)
+            .then((res) => {
+                return res.json()
+            })
+            .then((data) => {
+                console.log("Flower Add Success", data)
+                setfinishSeedVisible(false)
+            })
+            .catch(error=>console.log('ERROR'))
+    }
 
     const closeModal = () => {
-        setfinishSeed(false)
+        setfinishSeedVisible(false)
     }
-    const gotoMoon = () => {
-        for(key in userObject.flowerUri){
-           if(userObject.flowerUri[key]==-1){
-                userObject.flowerUri[key]=userObject.nowFlowerSeed
-                userObject.nowFlowerSeed=10
-                storage.set('user',JSON.stringify(userObject))
-                break;
-           }
-        }
-        setSeedModalVisible(true)
-        setfinishSeed(false)
-    }
+
+    // const caching = ()=>{
+    // setJsonUser(storage.getString('user'))
+    // setUserObject(JSON.parse(jsonUser))
+    // }
+
+    // useEffect(() => {caching()}, [isFocused]);
+
+    // const gotoMoon = () => {
+    //     for(key in userObject.flowerUri){
+    //        if(userObject.flowerUri[key]==-1){
+    //             userObject.flowerUri[key]=userObject.nowFlowerSeed
+    //             storage.set('user',JSON.stringify(userObject))
+    //             break;
+    //        }
+    //     }
+    //     setSeedModalVisible(true)
+    //     setfinishSeed(false)
+    // }
 return (
     <>
         <Modal
             animationType="none"
             transparent={true}
-            visible={finishSeed}
+            visible={finishSeedVisible}
             onRequestClose={() => {
-                setfinishSeed(false);
+                setfinishSeedVisible(false);
             }}
         >
             <View style={styles.centeredView}>
                 <View style={[styles.modalView]}>
                     <View style={styles.flexThree}>
-                        <Text style={{ color: '#000000' }}>축하합니다! {seedName}이가 모두 자랐어요</Text>
+                        {/* <Text style={{ color: '#000000' }}>축하합니다! {userObject.flowerNow[0].flowerNickname}이가 모두 자랐어요</Text> */}
+                        <Text style={{ color: '#000000' }}>축하합니다! test이가 모두 자랐어요</Text>
                         <Text style={{ color: '#000000' }}>나만의 정원으로 옮겨보세요</Text>
                     </View>
                     <View style={{ marginLeft: '20%' }}>
-                        <Image style={{ width: 170, height: 250 }} source={userObject.nowFlowerSeed != 10 ? flower[userObject.nowFlowerSeed].upng : {uri:''}}/>
+                        {/* <Image style={{ width: 170, height: 250 }} source={flower[userObject.flowerNow[0].flower].upng}/> */}
+                        <Image style={{ width: 170, height: 250 }} source={flower[0].upng}/>
                     </View>
                     <View style={styles.flexThree}>
                         <View style={{ flexDirection: 'row' }}>
@@ -70,7 +105,7 @@ return (
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={closeModal}
-                                style={styles.selectSeedButtonNext}>
+                                style={styles.selectSeedButton}>
                                 <Text style={styles.selectSeedText}>다음에</Text>
                             </TouchableOpacity>
                         </View>

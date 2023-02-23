@@ -18,7 +18,6 @@ import Seedfinish from './SeedFinish'
 import styles from './style'
 import flower from './flower'
 import KakaoSDK from '@actbase/react-kakaosdk'
-import { and } from 'react-native-reanimated'
 
 export const storage = new MMKV()
 
@@ -59,6 +58,7 @@ function Main(props){
   const [recycle,setRecycle]=useState(0)
   const [nowSeedName,setNowSeedName]=useState('')
   const [flowerDate,setFlowerDate]=useState('')
+  const [flowerUri, setFlowerUri]=useState('')
   const [calendarDate, setCalendarDate] = useState([])
   const [propcalendarDate,setPropcalendarDate] = useState([])
   
@@ -96,6 +96,24 @@ function Main(props){
     return Math.floor(date/(1000*60*60*24))
   }
 
+  const FlowerGIF =(user)=>{
+    if (user.flowerNow[0].flowerPoint < 6){
+      setFlowerUri(flower[user.flowerNow[0].flower].uri1)
+    }
+    else if (user.flowerNow[0].flowerPoint <14){
+      setFlowerUri(flower[user.flowerNow[0].flower].uri2)
+    }
+    else if(user.flowerNow[0].flowerPoint<21){
+      setFlowerUri(flower[user.flowerNow[0].flower].uri3)
+    }
+    else if(user.flowerNow[0].flowerPoint<26){
+      setFlowerUri(flower[user.flowerNow[0].flower].uri4)
+    }
+    else {
+      setFlowerUri(flower[user.flowerNow[0].flower].uri5)
+    }
+  }
+
   useEffect(()=>{
     getUser()
     .then((user) => {
@@ -105,6 +123,7 @@ function Main(props){
       if((user.flowerNow).length !== 0) {
         setNowSeedName((user.flowerNow).length===0?'':user.flowerNow[0].flowerNickname)
         setFlowerDate(flower_day(user))
+        FlowerGIF(user)
       }
 
       for(key in calendarDate){
@@ -117,7 +136,7 @@ function Main(props){
         setSeedModalVisible(true)
       }
       else {
-        if(user.flowerNow.flowerPoint >= 30) {
+        if(user.flowerNow[0].flowerPoint >= 30) {
           setfinishSeedVisible(true)
         }
       }
@@ -127,31 +146,6 @@ function Main(props){
   const isSeedName=()=>{
     return <Text style={styles.tulipText}>{nowSeedName}와 함께 {flowerDate}일째</Text>
   }  
-
-  const FlowerGIF =()=>{
-    var tmp =''
-    if (userObject.flowerNow[0].flowerPoint < 6){
-      tmp = flower[userObject.flowerNow[0].flower].uri1
-    }
-    else if (userObject.flowerNow[0].flowerPoint <14){
-      tmp = flower[userObject.flowerNow[0].flower].uri2
-    }
-    else if(userObject.flowerNow[0].flowerPoint<21){
-      tmp = flower[userObject.flowerNow[0].flower].uri3
-    }
-    else if(userObject.flowerNow[0].flowerPoint<26){
-      tmp = flower[userObject.flowerNow[0].flower].uri4
-    }
-    else {
-      tmp = flower[userObject.flowerNow[0].flower].uri5
-    }
-    return (
-      <Image 
-        source={tmp} 
-        style={{width:300, height:400, marginLeft:5}}
-      />
-    )
-  }
 
   return(
     <>
@@ -203,7 +197,11 @@ function Main(props){
                   <View style={{alignItems:'center',height:'55%'}}>
                       {isSeedName()}
                       {/* <Iosview/> */}
-                      <FlowerGIF/>
+                      {/* <FlowerGIF/> */}
+                      <Image 
+                        source={flowerUri} 
+                        style={{width:300, height:400, marginLeft:5}}
+                      />
                   </View>
                   <View style={{alignItems:'center',height:'20%',justifyContent:'center'}}>
                       <TouchableOpacity onPress={()=>setModalVisible(true)}>  
@@ -227,12 +225,12 @@ function Main(props){
                   seedModalVisible={seedModalVisible}
                   setSeedModalVisible={setSeedModalVisible}
               />
-              {/* <Seedfinish
+              <Seedfinish
                   finishSeedVisible={finishSeedVisible}
                   setfinishSeedVisible={setfinishSeedVisible}
                   // seedName={seedName_mainPage}
                   // setSeedModalVisible={setSeedModalVisible}
-              /> */}
+              />
           </ImageBackground>
       </SafeAreaView>
     </>

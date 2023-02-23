@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
         margin: 10,
         alignItems:'center',
         justifyContent:'center',
-        width:300,
+        width:150,
         marginTop:10,
         backgroundColor:'#a8cd98',
         marginTop:'7%'
