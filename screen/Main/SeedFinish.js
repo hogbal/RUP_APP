@@ -20,7 +20,6 @@ const SeedFinish = (props) => {
     
     useEffect(() => {
         getUser()
-        console.log(userObject)
     },[])
 
     const getUser = async () => {

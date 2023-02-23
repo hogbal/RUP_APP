@@ -213,8 +213,6 @@ function Main(props){
               <BottomSheet_Main
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
-                setPoint={setPoint}
-                setRecycle={setRecycle}
               />
               <CalendarModal
                 calendarModalVisible={calendarModalVisible}
@@ -228,8 +226,6 @@ function Main(props){
               <Seedfinish
                   finishSeedVisible={finishSeedVisible}
                   setfinishSeedVisible={setfinishSeedVisible}
-                  // seedName={seedName_mainPage}
-                  // setSeedModalVisible={setSeedModalVisible}
               />
           </ImageBackground>
       </SafeAreaView>
