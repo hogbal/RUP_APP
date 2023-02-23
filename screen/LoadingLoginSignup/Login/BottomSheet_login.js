@@ -15,17 +15,18 @@ import {
     KeyboardAvoidingView,
     SafeAreaView
 } from 'react-native';
+
 import { useNavigation,useIsFocused } from '@react-navigation/native';
 import KakaoSDK from '@actbase/react-kakaosdk'
 import { useToast } from "react-native-toast-notifications";
 import {validateNickName,validateEmail,validatePw, validateBirth} from '../../../validate.js'
 import { MMKV } from 'react-native-mmkv'
 import { RadioButton } from 'react-native-paper';
-import axios from 'axios'
-//import SearchUniversity from '../SearchUniversity.js';
-//import SearchMajor from '../SearchMajor.js'
+
 import uuid from 'react-native-uuid';
 import styles from './style'
+
+import { createPOSTObject, createGETObject } from '../../API/Network'
 
 export const storage = new MMKV()
 
@@ -55,11 +56,6 @@ const BottomSheet_login = (props) => {
     const toast = useToast();
     const redStar = require('../../../imageResource/jobDaHan/redStar.png')
     const [check,setcheck] = useState(0)
-    const nickNameRef = useRef()
-    const emailRef = useRef()
-    const pwRef = useRef()
-    const pwAgainRef = useRef()
-    const birthRef = useRef()
 
     const signInWithKakao=async()=>{
         await KakaoSDK.init("6d2aa639e8ea6e75a8dd34f45ad60cf0")
@@ -73,15 +69,6 @@ const BottomSheet_login = (props) => {
             console.log(err.message)
         }
       }
-
-    const loginSignUpSelectedTab = () => {    
-        switch(selectedTab){
-            case 'Login':
-                return <Login />
-            case 'SignUp':
-                return <SignUp />
-        }
-    }
 
     const Login=()=>{
         const [email,setEmail]=useState('')
@@ -313,15 +300,17 @@ const BottomSheet_login = (props) => {
         }
     }
     const nickToServer=(name)=>{
-        fetch('http://13.124.80.15/user/nickname-check',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({
-              nickname:name
-            })
+
+        let data = {
+            nickname:name
+        }
+
+        createPOSTObject('user/nickname-check',data)
+        .then((res) => {
+            return res.json()
         })
-        .then(res=>{return res.json()})
-        .then(data=>{
+        .then((data) => {
+            console.log(data)
             if(data.success===true){
                 showToast('중복 확인 완료')
                 setUserName(name)
@@ -399,89 +388,69 @@ const BottomSheet_login = (props) => {
         })
     }
     const postSignUp=()=>{
-        fetch('http://13.124.80.15/user/add-new-user',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({
-                uid:uid, // 필수
-                email:userEmail, // 필수
-                password:userPw,
-                nickname: userName,// 필수
-                sex : userSex,
-                birth: userBirth,
-                college: university,
-                major:major
-                
-            })
+        let data = {
+            email:userEmail, // 필수
+            password:userPw,
+            nickname: userName,// 필수
+            sex : userSex,
+            birth: userBirth,
+            college: university,
+            major:major
+            
+        }
+        
+        createPOSTObject('user/add-new-user',data)
+        .then((res) => {
+            return res.json()
         })
-        .then(res=>{return res.json()})
-        .then(data=>{
-            console.log(data)
-            if(data.success===true){
+        .then((data) => {
+            if(data.success===true) {
                 showToast('회원가입 완료!')
                 setLoginSelectedTab(true)
                 userDefaultValue('','','','',null,null)
                 setUniversity("")
                 setMajor("")
                 console.log('good')
-            }else{
+            }
+            else {
                 showToast('회원가입 안됨')
             }
         })
         .catch(error=>console.log('ERROR'))
     }
-    const postLogin=(email,pw)=>{                                   /////이메일 로그인
-        // fetch('http://13.124.80.15/user/login',{
-        //     method:'POST',
-        //     headers:{'Content-Type':'application/json'},
-        //     body:JSON.stringify({
-        //         email: email,
-        //         password: pw
-        //     })
-        // })
-        // .then(res=>{return res.json()})
-        // .then(data=>{
-        //     if(data!=='-1'){
-        //         console.log(data)
-        //         getMainData(data)                              /////로그인 성공, MainData 가져오기
-        //     }else{
-        //         showToast('이메일 또는 비밀번호가 틀렸습니다.')
-        //     }
-        // })
-        // .catch(error=>console.log('ERROR'))
-
-        axios.post('http://13.124.80.15/user/login', {
+    const postLogin=(email,pw)=>{
+        let data = {
             email: email,
             password: pw
-          })
-          .then(function (response) {
-            if(response.data.uid!=='-1'){
+        }
+
+        createPOSTObject('user/login',data)
+        .then((res) => {
+            return res.json()
+        })
+        .then((data) => {
+            if(data.uid !== '-1') {
                 setModalVisible(false)
-                getMainData(response.data.uid)
-            }else{
+                getMainData(data.uid)
+            }
+            else {
                 showToast('이메일 또는 비밀번호가 틀렸습니다.')
             }
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-
+        })
+        .catch(error=>console.log('ERROR'))
     }
     
     const postKakaoLogin=(profile)=>{                                  ///////카카오 로그인
-        //console.log(profile)
-        
-        fetch('http://13.124.80.15/user/login',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({
-                uid:profile.id
-            })
+        let data = {
+            uid:profile.id
+        }
+
+        createPOSTObject('user/login',data)
+        .then((res) => {
+            return res.json()
         })
-        .then(res=>{return res.json()})
-        .then(data=>{
-            console.log(data)
-            if(data.uid!=='-1'){                                /////로그인 성공, MainData 가져오기
+        .then((data) => {
+            if(data.uid !== '-1'){                                /////로그인 성공, MainData 가져오기
                 getMainData(profile.id)
             }else{
                 setModalVisible(false)
@@ -493,61 +462,51 @@ const BottomSheet_login = (props) => {
     }
 
     const getMainData=(uid)=>{
-        // fetch(`http://13.124.80.15/home/main?uid=${uid}`)
-        // .then(res=>{return res.json()})
-        // .then(data=>{
-        //     console.log(data)
-        //     setModalVisible(false)
-        //     navigation.reset({routes:[{name:'Main',data}]})
-        // })
-        // .catch(error=>console.log('ERROR'))
-
-        axios.get('http://13.124.80.15/home/main', {
-            params: {
-              uid: uid
-            }
-          })
-          .then(function (response) {
+        createGETObject('home/main',uid)
+        .then((res) => {
+            return res.json()
+        })
+        .then((data) => {
             let arr = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
-            if((response.data.flowerRecord).length>1){
-                for(let i=0;i<(response.data.flowerRecord).length-1;i++ ){
-                    if(response.data.flowerRecord[i].flower==='flowerA')
+            if((data.flowerRecord).length>1){
+                for(let i=0;i<(data.flowerRecord).length-1;i++ ){
+                    if(data.flowerRecord[i].flower==='flowerA')
                         arr[i]=0
-                    else if(response.data.flowerRecord[i].flower==='flowerB')
+                    else if(data.flowerRecord[i].flower==='flowerB')
                         arr[i]=1
-                    else if(response.data.flowerRecord[i].flower==='flowerC')
+                    else if(data.flowerRecord[i].flower==='flowerC')
                         arr[i]=2
-                    else if(response.data.flowerRecord[i].flower==='flowerD')
+                    else if(data.flowerRecord[i].flower==='flowerD')
                         arr[i]=3
-                    else if(response.data.flowerRecord[i].flower==='flowerE')
+                    else if(data.flowerRecord[i].flower==='flowerE')
                         arr[i]=4
-                    else if(response.data.flowerRecord[i].flower==='flowerF')
+                    else if(data.flowerRecord[i].flower==='flowerF')
                         arr[i]=5
-                    else if(response.data.flowerRecord[i].flower==='flowerG')
+                    else if(data.flowerRecord[i].flower==='flowerG')
                         arr[i]=6
-                    else if(response.data.flowerRecord[i].flower==='flowerH')
+                    else if(data.flowerRecord[i].flower==='flowerH')
                         arr[i]=7
-                    else if(response.data.flowerRecord[i].flower==='flowerI')
+                    else if(data.flowerRecord[i].flower==='flowerI')
                         arr[i]=8
-                    else if(response.data.flowerRecord[i].flower==='flowerJ')
+                    else if(data.flowerRecord[i].flower==='flowerJ')
                         arr[i]=9
                 }
             }
             const user = {
-                uid:response.data.uid,
-                userName: response.data.nickname,
-                email: response.data.email,
-                password: response.data.password,
-                profileImgPath:response.data.profileImgPath,
-                point:29,
-                countRecycle:29,
-                calendarDate:response.data.calendarDate,
-                flowerRecord:response.data.flowerRecord,
-                birth:response.data.birth,
-                sex:response.data.sex,
-                univ:response.data.college,
-                major:response.data.major,
-                nowFlowerSeed:response.data.nowFlowerSeed, 
+                uid:data.uid,
+                userName: data.nickname,
+                email: data.email,
+                password: data.password,
+                profileImgPath:data.profileImgPath,
+                point:data.point,
+                countRecycle:data.countRecycle,
+                calendarDate:data.calendarDate,
+                flowerRecord:data.flowerRecord,
+                birth:data.birth,
+                sex:data.sex,
+                univ:data.college,
+                major:data.major,
+                nowFlowerSeed:data.nowFlowerSeed, 
                 nowFlowerName:'',
                 flowerUri:{
                 "0" : arr[0],
@@ -564,11 +523,8 @@ const BottomSheet_login = (props) => {
             }
             storage.set('user', JSON.stringify(user))
             navigation.reset({routes:[{name:'Main'}]})
-          })
-          .catch(function (error) {
-            console.log(error);
-            console.log('fail')
-          });
+        })
+        .catch(error=>console.log('ERROR'))
     }
 
     const translateY_login = panY_login.interpolate({
