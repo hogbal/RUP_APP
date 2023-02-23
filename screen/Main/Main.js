@@ -18,114 +18,113 @@ import Seedfinish from './SeedFinish'
 import styles from './style'
 import flower from './flower'
 import KakaoSDK from '@actbase/react-kakaosdk'
-import axios from 'axios'
 
 export const storage = new MMKV()
 
-function useInterval(callback, delay) {
-    const savedCallback = useRef();
-    // Remember the latest callback.
-    useEffect(() => {
-      savedCallback.current = callback;
-    }, [callback]);
-    // Set up the interval.
-    useEffect(() => {
-      function tick() {
-        savedCallback.current();
-      }
-      if (delay !== null) {
-        let id = setInterval(tick, delay);
-        return () => clearInterval(id);
-      }
-    }, [delay]);
-  }
+// function useInterval(callback, delay) {
+//   const savedCallback = useRef();
+//   // Remember the latest callback.
+//   useEffect(() => {
+//     savedCallback.current = callback;
+//   }, [callback]);
+//   // Set up the interval.
+//   useEffect(() => {
+//     function tick() {
+//       savedCallback.current();
+//     }
+//     if (delay !== null) {
+//       let id = setInterval(tick, delay);
+//       return () => clearInterval(id);
+//     }
+//   }, [delay]);
+// }
 
 function Main(props){
   const isFocused = useIsFocused();
   const navigation = useNavigation()
+  
   const jsonUser = storage.getString('user')
-  const userObject = JSON.parse(jsonUser)
-  const [point,setPoint]=useState(userObject.point)
-  const [recycle,setRecycle]=useState(userObject.countRecycle)
-  const [flowerRecord,setFlowerRecord]=useState(userObject.flowerRecord)
-  const [seedName_mainPage,setSeedName_mainPage]=useState((userObject.flowerRecord).length===0?'':userObject.flowerRecord.slice(-1)[0].flowerNickname)
-  const [seedColor,setSeedColor]=useState('')
-  const [currentTime,setCurrentTime]=useState(new Date())
-  const [seedTime,setSeedTime]=useState(new Date())
+  const [userObject, setUser] = useState(JSON.parse(jsonUser))
+
+  // const [point,setPoint]=useState(userObject.point)
+  // const [recycle,setRecycle]=useState(userObject.countRecycle)
+  // const [seedName_mainPage,setSeedName_mainPage]=useState((userObject.flowerRecord).length===0?'':userObject.flowerRecord.slice(-1)[0].flowerNickname)
+  // const [seedModalVisible,setSeedModalVisible] = useState((userObject.nowFlowerSeed)===10?true:false)
+  // const [calendarDate, setCalendarDate] = useState(userObject.calendarDate)
+  // const createFlowerDate = (userObject.flowerRecord).length===0?new Date():new Date((userObject.flowerRecord.slice(-1)[0].date).replace(' ','T'))
+  // const [propcalendarDate,setPropcalendarDate] = useState([])
+  
+  const [point,setPoint]=useState(0)
+  const [recycle,setRecycle]=useState(0)
+  const [seedName_mainPage,setSeedName_mainPage]=useState('')
   const [flowerDate,setFlowerDate]=useState('')
+  const [calendarDate, setCalendarDate] = useState([])
+  const [propcalendarDate,setPropcalendarDate] = useState([])
+  
+  const [seedModalVisible,setSeedModalVisible] = useState(false)
   const [modalVisible,setModalVisible]=useState(false)
-  const [calendarModalVisible, setCalendarModalVisible] = useState(false);
-  const [seedModalVisible,setSeedModalVisible] = useState((userObject.nowFlowerSeed)===10?true:false) 
+  const [calendarModalVisible, setCalendarModalVisible] = useState(false) 
   const [finishSeed,setfinishSeed] = useState(false)
   const [asking,setasking] = useState(1)
-  const calendarDate = userObject.calendarDate
-  const [propcalendarDate,setPropcalendarDate] = useState([])
-  const createFlowerDate = (userObject.flowerRecord).length===0?new Date():new Date((userObject.flowerRecord.slice(-1)[0].date).replace(' ','T'))
-  for(key in calendarDate){
-    propcalendarDate.push((calendarDate[key].date).slice(0,10))
-  }
+
+  // for(key in calendarDate){
+  //   propcalendarDate.push((calendarDate[key].date).slice(0,10))
+  // }
+
+  // console.log(propcalendarDate)
 
   const kaka=async()=>{
     const ee = await KakaoSDK.getProfile()
-    console.log(ee)
   }
   const isSeedName=()=>{
     return <Text style={styles.tulipText}>{seedName_mainPage}와 함께 {flowerDate}일째</Text>
   }  
+
   useEffect(()=>{
     if(point%30===0 && point!==0 && asking==1){
       setfinishSeed(true)
       setasking(0)
     }
   },[point])
-  
-  useInterval(()=>{{
-    setCurrentTime(new Date())
-    setasking(1)
-    }},60000)
+
+  const getUser = async () => {
+    try {
+      const user = await JSON.parse(storage.getString('user'))
+      if(user !== null) {
+        setUser(user)
+        return user
+      }
+    }
+    catch (e) {
+      console.error(e)
+    }
+  }
+
+  const flower_day = (user)=>{
+    let date = (new Date()).getTime() - new Date(user.flowerRecord.slice(-1)[0].date.replace(' ','T')).getTime()
+    return Math.floor(date/(1000*60*60*24))
+  }
 
   useEffect(()=>{
-    let date = currentTime.getTime() - createFlowerDate.getTime()   //현재시각 - 꽃 만들었을 때 시각
-    setFlowerDate(Math.floor(date/(1000*60*60*24)))
-  },[currentTime])
+    getUser()
+    .then((user) => {
+      setPoint(user.point)
+      setRecycle(user.countRecycle)
+      setSeedName_mainPage((user.flowerRecord).length===0?'':user.flowerRecord.slice(-1)[0].flowerNickname)
+      setFlowerDate(flower_day(user))
 
-  useEffect(()=>{  
-    if((userObject.flowerRecord).length===0){
-      return nullFlowerRecord()
-    }else{
-      return notNullFlowerRecord()
-    }
-  },[seedName_mainPage])
+      for(key in calendarDate){
+        propcalendarDate.push((calendarDate[key].date).slice(0,10))
+      }
+      return user
+    })
+    .then((user) => {
+      if((user.flowerRecord).length===0){
+        setSeedModalVisible(true)
+      }
+    })
+  }, [])
 
-  const nullFlowerRecord=()=>{
-    if(seedName_mainPage!==''){
-      flowerAdd()
-    }
-  }
-
-  const notNullFlowerRecord=()=>{
-    if(userObject.flowerRecord.slice(-1)[0].flowerNickname!==seedName_mainPage){
-      flowerAdd()
-    }
-  }
-
-  const flowerAdd=()=>{
-    axios.post('http://13.124.80.15/flower/add-new-flower', {
-            uid:userObject.uid,
-            flower:flower[userObject.nowFlowerSeed].flowername,
-            flowerNickname:seedName_mainPage
-          })
-          .then(function (response) {
-            console.log('success')
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-  }
-  // console.log(userObject)
-
-  console.log('nowFlowerSeed2 : ',userObject.nowFlowerSeed)
-  console.log(userObject)
   const FlowerGIF =()=>{
     var tmp =''
     var sw = recycle%30
@@ -152,17 +151,6 @@ function Main(props){
     )
   }
 
-  const Iosview =()=>{
-    if(Platform.OS==="ios")
-    return (
-      <View style={{height:"8%"}}/>
-    )
-  }
-  if(userObject.profileImage==""){
-    console.log('ff')
-  }else{
-    console.log(userObject.profileImgPath)
-  }
   return(
     <>
       <SafeAreaView style={{flex:1,backgroundColor:"rgb(166,150,135)"}}>
@@ -172,7 +160,7 @@ function Main(props){
                   width: '100%',
               }}
               source={require('../../imageResource/background/bg_04.png')}>
-              <View >
+              <View>
                   <View style={styles.topLineContainer}>
                       <View style={styles.topLineLeft}>
                           <View style={styles.flexDirectionRow}>
@@ -220,9 +208,6 @@ function Main(props){
                         <View style={{height:'45%'}}/>
                         <Image style={{width:70,height:70}} source={require('../../imageResource/icon/qrcode.png')}/>
                       </TouchableOpacity>
-                      {/* <TouchableOpacity onPress={()=>{setfinishSeed(true)}}>  
-                        <Text>투더문</Text>
-                      </TouchableOpacity> */}
                   </View>
               </View>
               <BottomSheet_Main
@@ -239,16 +224,13 @@ function Main(props){
               <SeedModal
                   seedModalVisible={seedModalVisible}
                   setSeedModalVisible={setSeedModalVisible}
-                  setSeedName_mainPage={setSeedName_mainPage}
-                  seedColor={seedColor}
-                  setSeedColor={setSeedColor}
               />
-              <Seedfinish
+              {/* <Seedfinish
                   finishSeed={finishSeed}
                   setfinishSeed={setfinishSeed}
                   seedName={seedName_mainPage}
                   setSeedModalVisible={setSeedModalVisible}
-              />
+              /> */}
           </ImageBackground>
       </SafeAreaView>
     </>

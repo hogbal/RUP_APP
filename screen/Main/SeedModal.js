@@ -14,10 +14,11 @@ import { MMKV } from 'react-native-mmkv'
 export const storage = new MMKV()
 
 const SeedModal=(props)=>{
-    const { seedModalVisible, setSeedModalVisible, setSeedName_mainPage,seedColor,setSeedColor} = props;
+    const { seedModalVisible, setSeedModalVisible } = props;
+    const [seedColor,setSeedColor]=useState('')
     const [inputNameModalVisible,setInputNameModalVisible]=useState(false)
+    const [selectSeed, setSelectSeed] = useState('')
     const jsonUser = storage.getString('user') 
-    const userObject = JSON.parse(jsonUser)
 
     closeModal=()=>{
         setSeedModalVisible(false)
@@ -29,25 +30,26 @@ const SeedModal=(props)=>{
         else{
             switch(seedColor){
                 case 'Pink':
-                    userObject.nowFlowerSeed = 0
-                  break;
+                    setSelectSeed('flowerA')
+                    break
                 case 'Brown':
-                    userObject.nowFlowerSeed = 1
-                  break;
+                    setSelectSeed('flowerB')
+                    break
                 case 'Lavender':
-                    userObject.nowFlowerSeed = 2
-                  break; 
+                    setSelectSeed('flowerC')
+                    break;
                 case 'Green':
-                    userObject.nowFlowerSeed = 3
-                  break;
+                    setSelectSeed('flowerD')
+                    break
                 case 'Purple':
-                    userObject.nowFlowerSeed = 4
-                  break;
+                    setSelectSeed('flowerE')
+                    break
                 case 'Yellow':
-                  userObject.nowFlowerSeed = (Math.floor(Math.random()*5)+5)
-                  break;
+                //   userObject.nowFlowerSeed = (Math.floor(Math.random()*5)+5)
+                    setSelectSeed('flowerF')
+                    break
             }
-            storage.set('user',JSON.stringify(userObject))
+            // storage.set('user',JSON.stringify(userObject))
             //console.log(storage.getString('user'),"seedmodal")
             setInputNameModalVisible(true)
             setSeedModalVisible(false)
@@ -60,7 +62,7 @@ const SeedModal=(props)=>{
                 transparent={true}
                 visible={seedModalVisible}
                 onRequestClose={() => {
-                setSeedModalVisible(false);
+                    setSeedModalVisible(false);
                 }}
             >    
                 <View style={styles.centeredView}>
@@ -87,7 +89,7 @@ const SeedModal=(props)=>{
             <InputSeedNameModal
                 inputNameModalVisible={inputNameModalVisible}
                 setInputNameModalVisible={setInputNameModalVisible}
-                setSeedName_mainPage={setSeedName_mainPage}
+                selectSeed={selectSeed}
             />
         </>
     )
