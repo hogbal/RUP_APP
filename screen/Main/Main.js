@@ -18,6 +18,7 @@ import Seedfinish from './SeedFinish'
 import styles from './style'
 import flower from './flower'
 import KakaoSDK from '@actbase/react-kakaosdk'
+import { and } from 'react-native-reanimated'
 
 export const storage = new MMKV()
 
@@ -56,7 +57,7 @@ function Main(props){
   
   const [point,setPoint]=useState(0)
   const [recycle,setRecycle]=useState(0)
-  const [seedName_mainPage,setSeedName_mainPage]=useState('')
+  const [nowSeedName,setNowSeedName]=useState('')
   const [flowerDate,setFlowerDate]=useState('')
   const [calendarDate, setCalendarDate] = useState([])
   const [propcalendarDate,setPropcalendarDate] = useState([])
@@ -64,8 +65,8 @@ function Main(props){
   const [seedModalVisible,setSeedModalVisible] = useState(false)
   const [modalVisible,setModalVisible]=useState(false)
   const [calendarModalVisible, setCalendarModalVisible] = useState(false) 
-  const [finishSeed,setfinishSeed] = useState(false)
-  const [asking,setasking] = useState(1)
+  const [finishSeedVisible,setfinishSeedVisible] = useState(false)
+  // const [asking,setasking] = useState(1)
 
   // for(key in calendarDate){
   //   propcalendarDate.push((calendarDate[key].date).slice(0,10))
@@ -76,16 +77,6 @@ function Main(props){
   const kaka=async()=>{
     const ee = await KakaoSDK.getProfile()
   }
-  const isSeedName=()=>{
-    return <Text style={styles.tulipText}>{seedName_mainPage}와 함께 {flowerDate}일째</Text>
-  }  
-
-  useEffect(()=>{
-    if(point%30===0 && point!==0 && asking==1){
-      setfinishSeed(true)
-      setasking(0)
-    }
-  },[point])
 
   const getUser = async () => {
     try {
@@ -101,7 +92,7 @@ function Main(props){
   }
 
   const flower_day = (user)=>{
-    let date = (new Date()).getTime() - new Date(user.flowerRecord.slice(-1)[0].date.replace(' ','T')).getTime()
+    let date = (new Date()).getTime() - new Date(user.flowerNow[0].date.replace(' ','T')).getTime()
     return Math.floor(date/(1000*60*60*24))
   }
 
@@ -110,8 +101,11 @@ function Main(props){
     .then((user) => {
       setPoint(user.point)
       setRecycle(user.countRecycle)
-      setSeedName_mainPage((user.flowerRecord).length===0?'':user.flowerRecord.slice(-1)[0].flowerNickname)
-      setFlowerDate(flower_day(user))
+
+      if((user.flowerNow).length !== 0) {
+        setNowSeedName((user.flowerNow).length===0?'':user.flowerNow[0].flowerNickname)
+        setFlowerDate(flower_day(user))
+      }
 
       for(key in calendarDate){
         propcalendarDate.push((calendarDate[key].date).slice(0,10))
@@ -119,29 +113,37 @@ function Main(props){
       return user
     })
     .then((user) => {
-      if((user.flowerRecord).length===0){
+      if((user.flowerNow).length===0){
         setSeedModalVisible(true)
+      }
+      else {
+        if(user.flowerNow.flowerPoint >= 30) {
+          setfinishSeedVisible(true)
+        }
       }
     })
   }, [])
 
+  const isSeedName=()=>{
+    return <Text style={styles.tulipText}>{nowSeedName}와 함께 {flowerDate}일째</Text>
+  }  
+
   const FlowerGIF =()=>{
     var tmp =''
-    var sw = recycle%30
-    if (sw < 6){
-      tmp = flower[userObject.nowFlowerSeed].uri1
+    if (userObject.flowerNow[0].flowerPoint < 6){
+      tmp = flower[userObject.flowerNow[0].flower].uri1
     }
-    else if (sw <14){
-      tmp = flower[userObject.nowFlowerSeed].uri2
+    else if (userObject.flowerNow[0].flowerPoint <14){
+      tmp = flower[userObject.flowerNow[0].flower].uri2
     }
-    else if(sw<21){
-      tmp = flower[userObject.nowFlowerSeed].uri3
+    else if(userObject.flowerNow[0].flowerPoint<21){
+      tmp = flower[userObject.flowerNow[0].flower].uri3
     }
-    else if(sw<26){
-      tmp = flower[userObject.nowFlowerSeed].uri4
+    else if(userObject.flowerNow[0].flowerPoint<26){
+      tmp = flower[userObject.flowerNow[0].flower].uri4
     }
     else {
-      tmp = flower[userObject.nowFlowerSeed].uri5
+      tmp = flower[userObject.flowerNow[0].flower].uri5
     }
     return (
       <Image 
@@ -226,10 +228,10 @@ function Main(props){
                   setSeedModalVisible={setSeedModalVisible}
               />
               {/* <Seedfinish
-                  finishSeed={finishSeed}
-                  setfinishSeed={setfinishSeed}
-                  seedName={seedName_mainPage}
-                  setSeedModalVisible={setSeedModalVisible}
+                  finishSeedVisible={finishSeedVisible}
+                  setfinishSeedVisible={setfinishSeedVisible}
+                  // seedName={seedName_mainPage}
+                  // setSeedModalVisible={setSeedModalVisible}
               /> */}
           </ImageBackground>
       </SafeAreaView>
