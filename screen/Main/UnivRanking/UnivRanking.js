@@ -8,14 +8,12 @@ import {
     FlatList,
     SafeAreaView
 } from 'react-native'
-// import { MMKV } from 'react-native-mmkv'
+
 import { useNavigation, useIsFocused } from '@react-navigation/native';
-// import { useToast } from "react-native-toast-notifications";
-// import KakaoSDK from '@actbase/react-kakaosdk'
 import ReactNativeAnimatedSearchbox from 'react-native-animated-searchbox';
 import styles from './style.js'
 import {screenHeight,screenWidth} from '../../Main/fullScreenValue'
-
+import { createPOSTObject, createGETObject } from '../../API/Network'
 
 const UnivRanking=()=>{
     const isfocus = useIsFocused()
@@ -31,16 +29,15 @@ const UnivRanking=()=>{
       },[isfocus])
     
       const getRanking=()=>{
-        fetch('http://13.124.80.15/rank/college-rank', { 
-        method:'GET',
-        headers:{'Content-Type':'application/json'},     
-      })
-      .then(res=>{return res.json()})
-      .then(data=>{setRank(data),setFilterData(data)}) 
-      .catch(function (error) {
-        console.log(error);
-        console.log('fail')
-      });
+
+        createGETObject('rank/college-rank')
+        .then((res) => {
+            return res.json()
+        })
+        .then((data) => {
+            setRank(data),setFilterData(data)
+        }) 
+        .catch(error=>console.log('ERROR'))
     }
 
     const renderItem=({item})=>{

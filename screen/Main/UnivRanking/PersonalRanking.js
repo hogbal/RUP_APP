@@ -8,13 +8,11 @@ import {
     FlatList,
     SafeAreaView
 } from 'react-native'
-// import { MMKV } from 'react-native-mmkv'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-// import { useToast } from "react-native-toast-notifications";
-// import KakaoSDK from '@actbase/react-kakaosdk'
 import ReactNativeAnimatedSearchbox from 'react-native-animated-searchbox';
 import styles from './style.js'
 import {screenHeight,screenWidth} from '../../Main/fullScreenValue'
+import { createPOSTObject, createGETObject } from '../../API/Network'
 
 const PersonalRanking=(props)=>{
     const isfocus = useIsFocused()
@@ -29,22 +27,22 @@ const PersonalRanking=(props)=>{
 
     useEffect(()=>{
         getRanking()    
-      },[isfocus])
+    },[isfocus])
     
-      const getRanking=()=>{
-        fetch('http://13.124.80.15/rank/college-each-rank', { 
-        method:'POST',
-        headers:{'Content-Type':'application/json'},     
-        body:JSON.stringify({
+    const getRanking=()=>{
+        let data ={
             college: univ
+        }
+
+        createPOSTObject('rank/college-each-rank', data)
+        .then((res) => {
+            return res.json()
         })
-      })
-      .then(res=>{return res.json()})
-      .then(data=>{console.log(data),setEachRank(data),setFilterData(data)})
-      .catch(function (error) {
-        console.log(error);
-        console.log('fail')
-      });
+        .then((data) => {
+            setEachRank(data)
+            setFilterData(data)
+        })
+        .catch(error=>console.log('ERROR',error))
     }
 
     const renderItem=({item})=>{
