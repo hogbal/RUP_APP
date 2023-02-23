@@ -21,24 +21,6 @@ import KakaoSDK from '@actbase/react-kakaosdk'
 
 export const storage = new MMKV()
 
-// function useInterval(callback, delay) {
-//   const savedCallback = useRef();
-//   // Remember the latest callback.
-//   useEffect(() => {
-//     savedCallback.current = callback;
-//   }, [callback]);
-//   // Set up the interval.
-//   useEffect(() => {
-//     function tick() {
-//       savedCallback.current();
-//     }
-//     if (delay !== null) {
-//       let id = setInterval(tick, delay);
-//       return () => clearInterval(id);
-//     }
-//   }, [delay]);
-// }
-
 function Main(props){
   const isFocused = useIsFocused();
   const navigation = useNavigation()
@@ -46,14 +28,6 @@ function Main(props){
   const jsonUser = storage.getString('user')
   const [userObject, setUser] = useState(JSON.parse(jsonUser))
 
-  // const [point,setPoint]=useState(userObject.point)
-  // const [recycle,setRecycle]=useState(userObject.countRecycle)
-  // const [seedName_mainPage,setSeedName_mainPage]=useState((userObject.flowerRecord).length===0?'':userObject.flowerRecord.slice(-1)[0].flowerNickname)
-  // const [seedModalVisible,setSeedModalVisible] = useState((userObject.nowFlowerSeed)===10?true:false)
-  // const [calendarDate, setCalendarDate] = useState(userObject.calendarDate)
-  // const createFlowerDate = (userObject.flowerRecord).length===0?new Date():new Date((userObject.flowerRecord.slice(-1)[0].date).replace(' ','T'))
-  // const [propcalendarDate,setPropcalendarDate] = useState([])
-  
   const [point,setPoint]=useState(0)
   const [recycle,setRecycle]=useState(0)
   const [nowSeedName,setNowSeedName]=useState('')
@@ -66,13 +40,6 @@ function Main(props){
   const [modalVisible,setModalVisible]=useState(false)
   const [calendarModalVisible, setCalendarModalVisible] = useState(false) 
   const [finishSeedVisible,setfinishSeedVisible] = useState(false)
-  // const [asking,setasking] = useState(1)
-
-  // for(key in calendarDate){
-  //   propcalendarDate.push((calendarDate[key].date).slice(0,10))
-  // }
-
-  // console.log(propcalendarDate)
 
   const kaka=async()=>{
     const ee = await KakaoSDK.getProfile()
@@ -126,9 +93,14 @@ function Main(props){
         FlowerGIF(user)
       }
 
-      for(key in calendarDate){
-        propcalendarDate.push((calendarDate[key].date).slice(0,10))
+      if(user.calendarDate.length !== 0) {
+        setCalendarDate(user.calendarDate)
+
+        for(let date of calendarDate){
+          propcalendarDate.push((date.date).slice(0,10))
+        }
       }
+
       return user
     })
     .then((user) => {

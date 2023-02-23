@@ -10,7 +10,7 @@ import { Calendar } from "react-native-calendars";
 import styles from './style'
 
 const CalendarModal=(props)=>{
-    const { calendarModalVisible, setCalendarModalVisible,calendarDate} = props;
+    const { calendarModalVisible, setCalendarModalVisible, calendarDate} = props;
 
     return(
         <>
