@@ -43,7 +43,7 @@ function useInterval(callback, delay) {
 function Main(props){
   const isFocused = useIsFocused();
   const navigation = useNavigation()
-  const jsonUser = storage.getString('user') // { 'userName': '박재연', 'point': 0 }
+  const jsonUser = storage.getString('user')
   const userObject = JSON.parse(jsonUser)
   const [point,setPoint]=useState(userObject.point)
   const [recycle,setRecycle]=useState(userObject.countRecycle)

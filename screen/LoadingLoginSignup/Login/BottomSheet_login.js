@@ -91,11 +91,13 @@ const BottomSheet_login = (props) => {
                 <View>
                     <TextInput
                         placeholder='이메일'
+                        placeholderTextColor="#dddddd"
                         style={styles.sectionStyle3}
                         onChangeText={email => setEmail(email)}
                     />
                     <TextInput
                         placeholder='비밀번호'
+                        placeholderTextColor="#dddddd"
                         style={styles.sectionStyle3}
                         onChangeText={pw => setPw(pw)}
                         secureTextEntry={true}
@@ -146,6 +148,7 @@ const BottomSheet_login = (props) => {
                             source={redStar}/>
                         <TextInput
                             placeholder='닉네임(2~16자)'
+                            placeholderTextColor="#dddddd"
                             style={styles.sectionStyle2}
                             onChangeText={name => setName(name)}
                             defaultValue={userName}
@@ -168,6 +171,7 @@ const BottomSheet_login = (props) => {
                             source={redStar}/>
                         <TextInput
                             placeholder='이메일'
+                            placeholderTextColor="#dddddd"
                             style={styles.sectionStyle}
                             onChangeText={email => setEmail(email)}
                             defaultValue={email}
@@ -180,6 +184,7 @@ const BottomSheet_login = (props) => {
                             source={redStar}/>
                         <TextInput
                             placeholder='비밀번호(4자 이상)'
+                            placeholderTextColor="#dddddd"
                             style={styles.sectionStyle}
                             onChangeText={pw => setPw(pw)}
                             defaultValue={pw}
@@ -192,6 +197,7 @@ const BottomSheet_login = (props) => {
                             source={redStar}/>
                         <TextInput
                             placeholder='비밀번호 재입력'
+                            placeholderTextColor="#dddddd"
                             style={styles.sectionStyle}
                             onChangeText={pwAgain => setPwAgain(pwAgain)}
                             defaultValue={pwAgain}
@@ -199,10 +205,7 @@ const BottomSheet_login = (props) => {
                             />
                     </View>
                     <View style={styles.rowDirection}>
-                        <View style={{flexDirection:'row'}}> 
-                            <Image      
-                                style={styles.redStar} 
-                                source={redStar}/>   
+                        <View style={{flexDirection:'row'}}>  
                             <TouchableOpacity                                                  
                                 style={[styles.sectionStyle,{flexDirection:'row',alignItems:'center'}]}
                                 onPress={()=>{
@@ -216,9 +219,6 @@ const BottomSheet_login = (props) => {
                             </TouchableOpacity>
                         </View>
                         <View style={{flexDirection:'row'}}>
-                            <Image      
-                                style={styles.redStar} 
-                                source={redStar}/>
                             <TouchableOpacity 
                                 style={[styles.sectionStyle,{flexDirection:'row',alignItems:'center'}]}
                                 onPress={()=>{
@@ -255,6 +255,7 @@ const BottomSheet_login = (props) => {
                     </View>
                     <TextInput
                         placeholder='생년월일(ex.19950101)'
+                        placeholderTextColor="#dddddd"
                         style={styles.sectionStyle3}
                         onChangeText={birth => {
                             if(birth.length===8){setBirth(birth)}
@@ -262,14 +263,6 @@ const BottomSheet_login = (props) => {
                         defaultValue={birth}
                         keyboardType={'number-pad'}
                         />
-                    <View style={styles.rowDirection}>
-                    <View style={{flexDirection:'row'}}>
-                        <Image
-                            style={{width:5,height:5}} 
-                            source={redStar}/>
-                        <Text style={{color:'red'}}>(필수)</Text>
-                    </View>
-                    </View>
                 </ScrollView>
                 <TouchableOpacity
                     onPress={()=>signUp(name,email,pw,pwAgain,sex,birth)}
@@ -677,35 +670,8 @@ const BottomSheet_login = (props) => {
                     </View>
                 </KeyboardAvoidingView>
             </Modal>
-            {/* <SearchUniversity
-                universityModal={universityModal}
-                setUniversityModal={setUniversityModal}
-                setUserUniversity={setUserUniversity}
-            /> */}
-            {/* <SearchMajor
-                majorModal={majorModal}
-                setMajorModal={setMajorModal}
-                setUserMajor={setUserMajor}
-            /> */}
         </>
     )
 }
 
 export default BottomSheet_login;
-
-
-
-
-
-
-//              "route": {
-//                         "key": "KakaoSignUp-BGhxDo4e_LYWSqbIwcC_C", 
-//                         "name": "KakaoSignUp", 
-//                         "params": {
-//                                     "connected_at": "2022-11-18 19:15:19", 
-//                                     "id": 2479352755, 
-//                                     "kakao_account": [Object], 
-//                                     "properties": [Object]
-//                                 }, 
-//                         "path": undefined
-//                         }

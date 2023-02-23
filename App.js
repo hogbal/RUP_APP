@@ -15,7 +15,6 @@ import ProfileImageFullSize from './screen/Main/Profile/ProfileImageFullSize.js'
 import InFullBloom from './screen/Main/InFullBloom/InFullBloom.js';
 import SearchMajor from './screen/LoadingLoginSignup/SearchMajor';
 import SearchUniversity from './screen/LoadingLoginSignup/SearchUniversity';
-import Test from './Test'
 
 const Stack = createStackNavigator();
 function App(){
@@ -46,12 +45,3 @@ function App(){
   )
 }
 export default App
-//        <Stack.Screen name = 'Profile' component={Profile}/>
-
-// <Stack.Screen name = 'Profile' component={Profile}/>
-// <Stack.Screen name = 'Notice' component={Notice}/>
-//fork_test
-//pull_test
-
-//dds
-//<Stack.Screen name = 'Test' component = {Test}/>
