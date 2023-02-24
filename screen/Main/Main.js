@@ -167,7 +167,7 @@ function Main(props){
       storage.set('user', JSON.stringify(user))
     })
     .catch(error=>console.log('ERROR',error))
-  }, [isFocused])
+  }, [])
 
   useEffect(()=>{
     console.log("Main Loading")
@@ -280,11 +280,13 @@ function Main(props){
                   seedModalVisible={seedModalVisible}
                   setSeedModalVisible={setSeedModalVisible}
                   userObject={userObject}
+                  setUser={setUser}
               />
               <Seedfinish
                   finishSeedVisible={finishSeedVisible}
                   setfinishSeedVisible={setfinishSeedVisible}
                   userObject={userObject}
+                  setUser={setUser}
               />
           </ImageBackground>
       </SafeAreaView>

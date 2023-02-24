@@ -13,13 +13,12 @@ export const storage = new MMKV()
 import { createPOSTObject, createGETObject } from '../API/Network'
 
 const InputSeedNameModal=(props)=>{
-    const { inputNameModalVisible, setInputNameModalVisible, selectSeed, userObject} = props;
+    const { inputNameModalVisible, setInputNameModalVisible, selectSeed, userObject, setUser} = props;
     const [seedName,setSeedName]=useState('')
 
     const closeModal=()=>{
         if(seedName!=='')
         {
-            console.log(userObject)
             let data = {
                 uid:userObject.uid,
                 flower:selectSeed,
@@ -31,10 +30,25 @@ const InputSeedNameModal=(props)=>{
                 return res.json()
             })
             .then((data) => {
-                console.log("Flower Add Success", data)
+                let user = userObject
+                let now = new Date()
+                now = now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate()+" "+now.getHours()+":"+now.getMinutes()+":"+now.getSeconds()
+
+                const flowerNow = {
+                    uid:userObject.uid,
+                    flower:selectSeed,
+                    flowerNickname:seedName,
+                    flowerPoint:0,
+                    flowerState:false,
+                    date:now
+                }
+                user.flowerNow = [flowerNow]
+
                 setInputNameModalVisible(false)
+                setUser(user)
+                storage.set('user', JSON.stringify(user))
             })
-            .catch(error=>console.log('ERROR'))
+            .catch(error=>console.log('ERROR',error))
         }
         else
         {

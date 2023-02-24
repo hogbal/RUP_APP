@@ -14,7 +14,7 @@ export const storage = new MMKV()
 import { createPOSTObject, createGETObject } from '../API/Network'
 
 const SeedFinish = (props) => {
-    const { finishSeedVisible, setfinishSeedVisible, userObject } = props;
+    const { finishSeedVisible, setfinishSeedVisible, userObject, setUser } = props;
     const [ seedName, setSeedName ] = useState('')
     const [ seedUri, setSeedUri ] = useState('')
 
@@ -35,10 +35,22 @@ const SeedFinish = (props) => {
                 return res.json()
             })
             .then((data) => {
-                console.log("Flower Add Success", data)
+                let user = userObject
+                let addFlower = userObject.flowerNow[0]
+                addFlower.flowerState = true
+
+                user.flowerNow = []
+                user.flowerEnds = []
+                for(let value of userObject.flowerEnds) {
+                    user.flowerEnds.push(value)
+                }
+                user.flowerEnds.push(addFlower)
+                
                 setfinishSeedVisible(false)
+                setUser(user)
+                storage.set('user', JSON.stringify(user))
             })
-            .catch(error=>console.log('ERROR'))
+            .catch(error=>console.log('ERROR',error))
     }
 
     const closeModal = () => {
