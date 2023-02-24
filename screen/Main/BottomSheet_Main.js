@@ -16,27 +16,8 @@ import styles from './style'
 export const storage = new MMKV()
 
 const BottomSheet_Main = (props) => {
-    const { modalVisible, setModalVisible } = props;
+    const { modalVisible, setModalVisible, userObject } = props;
     const screenHeight = Dimensions.get("screen").height;
-    const [userObject, setUser] = useState({})
-    
-    useEffect(() => {
-        getUser()
-    },[])
-
-    const getUser = async () => {
-        try {
-          const user = await JSON.parse(storage.getString('user'))
-          if(user !== null) {
-            console.log(user)
-            setUser(user)
-            return user
-          }
-        }
-        catch (e) {
-          console.error(e)
-        }
-    }
     
     const panY = useRef(new Animated.Value(screenHeight)).current;
     const translateY = panY.interpolate({

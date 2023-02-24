@@ -42,7 +42,6 @@ function Loading(){
                     point:data.point,
                     countRecycle:data.countRecycle,
                     calendarDate:data.calendarDate,
-                    flowerRecord:data.flowerRecord,
                     birth:data.birth,
                     sex:data.sex,
                     univ:data.college,

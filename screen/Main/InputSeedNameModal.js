@@ -1,4 +1,4 @@
-import React, { useEffect, useRef,useState } from 'react';
+import React,{useEffect,useState} from 'react'
 import {
     View,
     Text,
@@ -44,10 +44,9 @@ const InputSeedNameModal=(props)=>{
                         date:now
                     }
                     user.flowerNow = [flowerNow]
-
-                    setInputNameModalVisible(false)
                     setUser(user)
                     storage.set('user', JSON.stringify(user))
+                    setInputNameModalVisible(false)
                 }
             })
             .catch(error=>console.log('ERROR',error))

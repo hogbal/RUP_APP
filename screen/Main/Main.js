@@ -1,15 +1,14 @@
-import React,{useEffect,useState,useRef} from 'react'
+import React,{useEffect,useState} from 'react'
 import {
     View,
     Image,
     Text,
     ImageBackground,
     TouchableOpacity,
-    Platform,
     SafeAreaView
 } from 'react-native'
 
-import { useNavigation,useIsFocused } from '@react-navigation/native'
+import { useNavigation, useIsFocused } from '@react-navigation/native'
 import { MMKV } from 'react-native-mmkv'
 import BottomSheet_Main from './BottomSheet_Main'
 import CalendarModal from './CalenderModal'
@@ -22,8 +21,7 @@ import { createGETObject } from '../API/Network'
 
 export const storage = new MMKV()
 
-function Main(props){
-  const isFocused = useIsFocused();
+const  Main = (props) => {
   const navigation = useNavigation()
   
   const jsonUser = storage.getString('user')
@@ -38,13 +36,18 @@ function Main(props){
   const [propcalendarDate,setPropcalendarDate] = useState([])
   
   const [seedModalVisible,setSeedModalVisible] = useState(false)
+  const [finishSeedVisible,setfinishSeedVisible] = useState(false)
+  const [finishNext, setfinishNext] = useState(false)
   const [modalVisible,setModalVisible]=useState(false)
   const [calendarModalVisible, setCalendarModalVisible] = useState(false) 
-  const [finishSeedVisible,setfinishSeedVisible] = useState(false)
 
   const kaka=async()=>{
     const ee = await KakaoSDK.getProfile()
   }
+
+  const isSeedName=()=>{
+    return <Text style={styles.tulipText}>{nowSeedName}와 함께 {flowerDate}일째</Text>
+  }  
 
   const flower_day = (user)=>{
     let date = (new Date()).getTime() - new Date(user.flowerNow[0].date.replace(' ','T')).getTime()
@@ -69,7 +72,34 @@ function Main(props){
     }
   }
 
-  useEffect(()=>{
+  const mainLoading = () => {
+    setPoint(userObject.point)
+    setRecycle(userObject.countRecycle)
+
+    if((userObject.flowerNow).length !== 0) {
+      setNowSeedName((userObject.flowerNow).length===0?'':userObject.flowerNow[0].flowerNickname)
+      setFlowerDate(flower_day(userObject))
+      FlowerGIF(userObject)
+    }
+
+    if(userObject.calendarDate.length !== 0) {
+      setCalendarDate(userObject.calendarDate)
+      let data = []
+
+      for(let date of calendarDate){
+        data.push((date.date))
+      }
+      setPropcalendarDate(data)
+    }
+
+    if(userObject.flowerNow.length !== 0) {
+      if(userObject.flowerNow[0].flowerPoint >= 30 && !finishNext) {
+        setfinishSeedVisible(true)
+      }
+    }
+  }
+
+  const getUserInfo = () => {
     createGETObject('home/main',userObject.uid)
     .then((res) => {
       return res.json()
@@ -93,7 +123,6 @@ function Main(props){
         point:data.point,
         countRecycle:data.countRecycle,
         calendarDate:data.calendarDate,
-        flowerRecord:data.flowerRecord,
         birth:data.birth,
         sex:data.sex,
         univ:data.college,
@@ -116,42 +145,28 @@ function Main(props){
       storage.set('user', JSON.stringify(user))
     })
     .catch(error=>console.log('ERROR',error))
-  }, [])
+  }
 
   useEffect(()=>{
-    console.log("Main Loading", userObject)
-    setPoint(userObject.point)
-    setRecycle(userObject.countRecycle)
-
-    if((userObject.flowerNow).length !== 0) {
-      setNowSeedName((userObject.flowerNow).length===0?'':userObject.flowerNow[0].flowerNickname)
-      setFlowerDate(flower_day(userObject))
-      FlowerGIF(userObject)
-    }
-
-    if(userObject.calendarDate.length !== 0) {
-      setCalendarDate(userObject.calendarDate)
-      let data = []
-
-      for(let date of calendarDate){
-        data.push((date.date))
-      }
-      setPropcalendarDate(data)
-    }
-
-    if((userObject.flowerNow).length===0){
+    getUserInfo()
+    if(userObject.flowerNow.length===0){
       setSeedModalVisible(true)
     }
-    else {
-      if(userObject.flowerNow[0].flowerPoint >= 30) {
-        setfinishSeedVisible(true)
-      }
+    const interval = setInterval(()=>{
+      getUserInfo()
+    },5000)
+
+    return () => {
+      clearInterval(interval);
     }
+  }, [])
+
+
+  useEffect(()=>{
+    console.log("mainLoading....")
+    mainLoading()
   }, [userObject])
 
-  const isSeedName=()=>{
-    return <Text style={styles.tulipText}>{nowSeedName}와 함께 {flowerDate}일째</Text>
-  }  
 
   return(
     <>
@@ -219,6 +234,7 @@ function Main(props){
               <BottomSheet_Main
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
+                userObject={userObject}
               />
               <CalendarModal
                 calendarModalVisible={calendarModalVisible}
@@ -236,6 +252,8 @@ function Main(props){
                   setfinishSeedVisible={setfinishSeedVisible}
                   userObject={userObject}
                   setUser={setUser}
+                  setfinishNext={setfinishNext}
+                  setSeedModalVisible={setSeedModalVisible}
               />
           </ImageBackground>
       </SafeAreaView>
