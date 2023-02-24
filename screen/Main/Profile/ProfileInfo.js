@@ -22,6 +22,7 @@ const ProfileInfo=(props)=>{
     const jsonUser = storage.getString('user')
     const userObject = jsonUser == undefined ? {} :JSON.parse(jsonUser)
 
+    const [nameCheck, setNameCheck] = useState(true)
     const [name,setName] = useState(userObject.userName)
     const [email,setEmail] = useState(userObject.email)
     const [univ,setUniv] = useState(userObject.univ)
@@ -32,12 +33,13 @@ const ProfileInfo=(props)=>{
     const [placeHolderEmail,setPlaceHolderEmail] = useState(userObject.email)
 
     const editProfile=()=>{
-        if(userObject.userName!==name){
+        if(!nameCheck){
             nickToServer()
         }else{
             edit()
         }
     }
+
     const nickToServer=()=>{
         let data = {
             nickname:name
@@ -51,21 +53,18 @@ const ProfileInfo=(props)=>{
                 showToast('중복 확인 완료')
                 setName(name)
                 setNameCheck(true)
-                setNameDoubleCheck(name)
             }else{
                 showToast('이미 존재하는 닉네임 입니다.')
             }
         })
         .catch(error=>console.log('ERROR',error))
     }
+    
     const edit=()=>{
         let data = {
             uid: userObject.uid,
             email: email,
-            password: pw,
             nickname: name,
-            sex: userObject.sex,
-            birth: userObject.birth,
             college: univ,
             major: major
         }
@@ -74,16 +73,19 @@ const ProfileInfo=(props)=>{
             return res.json()
         })
         .then((data) => {
-            console.log(data)
-            userObject.userName = name
-            userObject.email = email
-            userObject.password = pw
-            userObject.college = univ
-            userObject.major = major
-            storage.set('user', JSON.stringify(userObject))
-            setPlaceHolderName(name)
-            setPlaceHolderEmail(email)
-            showToast('수정 완료!')
+            if(data.success===true){
+                userObject.userName = name
+                userObject.email = email
+                userObject.college = univ
+                userObject.major = major
+                storage.set('user', JSON.stringify(userObject))
+                setPlaceHolderName(name)
+                setPlaceHolderEmail(email)
+                showToast('수정 완료!')
+            }
+            else {
+                showToast('수정 실패!')
+            }
         })
         .catch(error=>console.log('ERROR',error))
     }
@@ -95,6 +97,7 @@ const ProfileInfo=(props)=>{
             animationType:'zoom-in',
         })
       }
+    
     return(
         <ScrollView showsVerticalScrollIndicator={false}>
             <Text style={styles.profileText}>이름</Text>
@@ -102,7 +105,10 @@ const ProfileInfo=(props)=>{
                 <TextInput 
                     placeholder={placeHolderName}
                     style={styles.sectionStyle}
-                    onChangeText={name => setName(name)}
+                    onChangeText={(name) => {
+                        setNameCheck(false)
+                        setName(name)
+                    }}
                     defaultValue={placeHolderName}/>
             </View>
             <Text style={styles.profileText}>이메일</Text>
@@ -207,16 +213,6 @@ const ProfileInfo=(props)=>{
                     </TouchableOpacity>
                 </View>
             </View>
-            {/* <SearchUniversity
-                universityModal={universityModal}
-                setUniversityModal={setUniversityModal}
-                setUserUniversity={setUniv}
-            />
-            <SearchMajor
-                majorModal={majorModal}
-                setMajorModal={setMajorModal}
-                setUserMajor={setMajor}
-            /> */}
         </ScrollView>
     )
 }

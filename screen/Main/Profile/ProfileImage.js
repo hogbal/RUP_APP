@@ -26,7 +26,7 @@ const ProfileImage=()=>{
     const userObject = jsonUser == undefined ? {} :JSON.parse(jsonUser)
     const [ modalVisible, setModalVisible ] = useState(false);
     const [profileImage, setProfileImage] = useState(userObject.profileImgPath===''?require('../../../imageResource/icon/ic_profile.png'):userObject.profileImgPath);
-    const androidGalleryImagePick= async ()=>{                       ///////////////갤러리 이미지픽
+    const androidGalleryImagePick= async ()=>{
         setModalVisible(false)
         const result = await launchImageLibrary();
             if (result.didCancel){
@@ -39,7 +39,7 @@ const ProfileImage=()=>{
             userObject.profileImgPath="file://"+uriPath
             storage.set('user', JSON.stringify(userObject))
     }
-    const androidPhotoImagePick= async ()=>{                           /////////////////포토 이미지픽
+    const androidPhotoImagePick= async ()=>{
             setModalVisible(false)
             const result = await launchCamera({
                 mediaType : 'photo',
