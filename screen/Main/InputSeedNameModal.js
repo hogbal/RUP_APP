@@ -14,7 +14,7 @@ import { createPOSTObject, createGETObject } from '../API/Network'
 import { flowerName } from './flower'
 
 const InputSeedNameModal=(props)=>{
-    const { inputNameModalVisible, setInputNameModalVisible, selectSeed, userObject, setUser} = props;
+    const { inputNameModalVisible, setInputNameModalVisible, selectSeed, userObject, setUser, getUserInfo } = props;
     const [seedName,setSeedName]=useState('')
 
     const closeModal=()=>{
@@ -47,6 +47,7 @@ const InputSeedNameModal=(props)=>{
                     setUser(user)
                     storage.set('user', JSON.stringify(user))
                     setInputNameModalVisible(false)
+                    getUserInfo()
                 }
             })
             .catch(error=>console.log('ERROR',error))

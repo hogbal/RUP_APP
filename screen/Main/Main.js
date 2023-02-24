@@ -246,6 +246,7 @@ const  Main = (props) => {
                   setSeedModalVisible={setSeedModalVisible}
                   userObject={userObject}
                   setUser={setUser}
+                  getUserInfo={getUserInfo}
               />
               <Seedfinish
                   finishSeedVisible={finishSeedVisible}

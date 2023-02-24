@@ -14,7 +14,7 @@ import { MMKV } from 'react-native-mmkv'
 export const storage = new MMKV()
 
 const SeedModal=(props)=>{
-    const { seedModalVisible, setSeedModalVisible, userObject, setUser } = props;
+    const { seedModalVisible, setSeedModalVisible, userObject, setUser, getUserInfo } = props;
     const [seedColor,setSeedColor]=useState('')
     const [inputNameModalVisible,setInputNameModalVisible]=useState(false)
     const [selectSeed, setSelectSeed] = useState('')
@@ -89,6 +89,7 @@ const SeedModal=(props)=>{
                 selectSeed={selectSeed}
                 userObject={userObject}
                 setUser={setUser}
+                getUserInfo={getUserInfo}
             />
         </>
     )

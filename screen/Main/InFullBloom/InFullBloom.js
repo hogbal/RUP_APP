@@ -11,12 +11,13 @@ import { useNavigation,useIsFocused } from '@react-navigation/native';
 import { MMKV } from 'react-native-mmkv'
 import BottomSheet_InFullBloom from './BottomSheet_InFullBloom';
 import styles from './style';
-import flower from '../flower'
+import { flower } from '../flower'
 
 export const storage = new MMKV()
 function InFullBloom(props){
     const jsonUser = storage.getString('user')
     const userObject = JSON.parse(jsonUser)
+    console.log(userObject)
     const navigation = useNavigation()
     const [modalVisible,setModalVisible]=useState(false)
     
