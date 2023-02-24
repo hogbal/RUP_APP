@@ -12,43 +12,24 @@ import {
 import { MMKV } from 'react-native-mmkv'
 import { useNavigation,useIsFocused } from '@react-navigation/native';
 import { useToast } from "react-native-toast-notifications";
-import SearchUniversity from '../../LoadingLoginSignup/SearchUniversity';
-import SearchMajor from '../../LoadingLoginSignup/SearchMajor'
-import KakaoSDK from '@actbase/react-kakaosdk'
-import axios from 'axios';
 import styles from './style.js'
+import { createPOSTObject, createGETObject } from '../../API/Network'
 
 export const storage = new MMKV()
 const ProfileInfo=(props)=>{
-    const {profilemajor, profileuniversity} = props;
-
     const navigation = useNavigation()
-    const isFocused = useIsFocused()
     const toast = useToast();
     const jsonUser = storage.getString('user')
     const userObject = jsonUser == undefined ? {} :JSON.parse(jsonUser)
+
     const [name,setName] = useState(userObject.userName)
     const [email,setEmail] = useState(userObject.email)
     const [univ,setUniv] = useState(userObject.univ)
     const [major,setMajor]= useState(userObject.major)
     const [pw,setPw]= useState(userObject.password)
-    const [birth,setBirth]= useState(userObject.birth)
-    const [sex,setSex] = useState(userObject.sex)
-    const [universityModal, setUniversityModal] = useState(false);
-    const [majorModal, setMajorModal] = useState(false);
+
     const [placeHolderName,setPlaceHolderName] = useState(userObject.userName)
     const [placeHolderEmail,setPlaceHolderEmail] = useState(userObject.email)
-    const [placeHolderPhoneNumber,setPlaceHolderPhoneNumber] = useState(userObject.phoneNumber)
-    const [placeHolderPw,setPlaceHolderPw]= useState(userObject.pw)
-
-    useEffect(()=>{
-        if(profilemajor!=""){
-            setMajor(profilemajor)
-        }
-        if(profileuniversity!=""){
-            setUniv(profileuniversity)
-        }
-    },[profilemajor,profileuniversity])
 
     const editProfile=()=>{
         if(userObject.userName!==name){
@@ -58,50 +39,53 @@ const ProfileInfo=(props)=>{
         }
     }
     const nickToServer=()=>{
-        fetch('http://13.124.80.15/user/nickname-check',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({
+        let data = {
             nickname:name
-            })
+        }
+        createPOSTObject('user/nickname-check',data)
+        .then((res) => {
+            return res.json()
         })
-        .then(res=>{return res.json()})
-        .then(data=>{
+        .then((data) => {
             if(data.success===true){
-                console.log('good')
-                return edit()
+                showToast('중복 확인 완료')
+                setName(name)
+                setNameCheck(true)
+                setNameDoubleCheck(name)
             }else{
-                return showToast('이미 존재하는 닉네임 입니다.')
+                showToast('이미 존재하는 닉네임 입니다.')
             }
         })
-        .catch(error=>console.log('ERROR'))
+        .catch(error=>console.log('ERROR',error))
     }
     const edit=()=>{
-        fetch('http://13.124.80.15/user/update-user-info',{
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({
-                uid: userObject.uid,
-                email: email,
-                password: pw,
-                nickname: name,
-                sex: userObject.sex,
-                birth: userObject.birth,
-                college: univ,
-                major: major,
-            })
+        let data = {
+            uid: userObject.uid,
+            email: email,
+            password: pw,
+            nickname: name,
+            sex: userObject.sex,
+            birth: userObject.birth,
+            college: univ,
+            major: major
+        }
+        createPOSTObject('user/update-user-info',data)
+        .then((res) => {
+            return res.json()
         })
-        .then(res=>{return res.json()})
-        .then(data=>{
+        .then((data) => {
+            console.log(data)
             userObject.userName = name
             userObject.email = email
             userObject.password = pw
+            userObject.college = univ
+            userObject.major = major
             storage.set('user', JSON.stringify(userObject))
             setPlaceHolderName(name)
             setPlaceHolderEmail(email)
             showToast('수정 완료!')
         })
-        .catch(error=>console.log('ERROR'))
+        .catch(error=>console.log('ERROR',error))
     }
     
     const showToast = (message) => {

@@ -46,19 +46,6 @@ function Main(props){
     const ee = await KakaoSDK.getProfile()
   }
 
-  const getUser = async () => {
-    try {
-      const user = await JSON.parse(storage.getString('user'))
-      if(user !== null) {
-        setUser(user)
-        return user
-      }
-    }
-    catch (e) {
-      console.error(e)
-    }
-  }
-
   const flower_day = (user)=>{
     let date = (new Date()).getTime() - new Date(user.flowerNow[0].date.replace(' ','T')).getTime()
     return Math.floor(date/(1000*60*60*24))
@@ -170,7 +157,7 @@ function Main(props){
   }, [])
 
   useEffect(()=>{
-    console.log("Main Loading")
+    console.log("Main Loading", userObject)
     setPoint(userObject.point)
     setRecycle(userObject.countRecycle)
 

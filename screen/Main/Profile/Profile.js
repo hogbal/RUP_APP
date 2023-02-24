@@ -14,23 +14,12 @@ import { useNavigation,useIsFocused } from '@react-navigation/native';
 import ProfileImage from './ProfileImage.js'
 import ProfileInfo from './ProfileInfo.js';
 import styles from './style.js';
-import { storage } from '../Main.js';
 
 function Profile({route}){
     const isFocused=useIsFocused()
     const navigation = useNavigation()
-    const [major, setMajor] = useState("")
-    const [university, setUniversity] = useState("")
 
-    useEffect(()=>{ 
-        if(route.params!=undefined){
-            if(route.params.univ!=undefined)
-                setUniversity(route.params.univ)
-            if(route.params.major!=undefined)
-                setMajor(route.params.major)
-        }},[isFocused])
     return(
-        
         <SafeAreaView style={[styles.container]}>
             <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : 'height'}
@@ -47,11 +36,7 @@ function Profile({route}){
                     <View style={styles.horizonalLine}/>
                     <ProfileImage/>
                     <View style={{marginTop:'7%'}}/>
-                    <ProfileInfo
-                        profilemajor={major}
-                        profileuniversity={university}
-
-                    />
+                    <ProfileInfo />
                 </View>
             </KeyboardAvoidingView>
         </SafeAreaView>
