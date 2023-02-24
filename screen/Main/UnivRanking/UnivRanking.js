@@ -79,9 +79,7 @@ const UnivRanking=()=>{
 
     //Call for the close  
     closeSearchBox = () => refSearchBox.current.close();
-    useEffect(()=>{
-        console.log('hi')
-    },[refSearchBox.current]) 
+    
     return(
         <SafeAreaView style={styles.container}>
             <View style={styles.topLine}>

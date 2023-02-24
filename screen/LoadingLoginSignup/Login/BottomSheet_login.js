@@ -145,7 +145,6 @@ const BottomSheet_login = (props) => {
                                 userDefaultValue(name,email,pw,pwAgain,sex,birth)
                                 validation_nickName(name)
                                 setcheck(1)
-                                console.log(check)
                             }}
                             style={styles.nickNameCheck}
                         >
@@ -286,7 +285,6 @@ const BottomSheet_login = (props) => {
     }, [openToastMessage]);
     useEffect(()=>{
         if(uid!==null){
-            console.log(uid)
             postSignUp()
         }
     },[uid])
@@ -310,7 +308,6 @@ const BottomSheet_login = (props) => {
             return res.json()
         })
         .then((data) => {
-            console.log(data)
             if(data.success===true){
                 showToast('중복 확인 완료')
                 setUserName(name)
@@ -410,7 +407,6 @@ const BottomSheet_login = (props) => {
                 userDefaultValue('','','','',null,null)
                 setUniversity("")
                 setMajor("")
-                console.log('good')
             }
             else {
                 showToast('회원가입 안됨')

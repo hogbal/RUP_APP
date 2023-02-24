@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -10,6 +10,7 @@ import { Calendar } from "react-native-calendars";
 import styles from './style'
 
 const CalendarModal=(props)=>{
+
     const { calendarModalVisible, setCalendarModalVisible, calendarDate} = props;
 
     return(
