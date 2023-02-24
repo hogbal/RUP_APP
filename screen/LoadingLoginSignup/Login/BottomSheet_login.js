@@ -465,7 +465,7 @@ const BottomSheet_login = (props) => {
         .then((data) => {
             let arr = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
             if(data.flowerEnds.length>0){
-                for(let i=0;i<(data.flowerEnds).length-1;i++ ){
+                for(let i=0;i<(data.flowerEnds).length;i++ ){
                     if(data.flowerEnds[i].flower==='flowerA')
                         arr[i]=0
                     else if(data.flowerEnds[i].flower==='flowerB')

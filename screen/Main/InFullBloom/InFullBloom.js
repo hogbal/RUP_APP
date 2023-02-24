@@ -1,8 +1,7 @@
-import React,{useEffect,useState} from 'react'
+import React,{useState} from 'react'
 import {
     View,
     Image,
-    Dimensions,
     Text,
     ImageBackground,
     TouchableOpacity,
@@ -13,20 +12,14 @@ import { MMKV } from 'react-native-mmkv'
 import BottomSheet_InFullBloom from './BottomSheet_InFullBloom';
 import styles from './style';
 import flower from '../flower'
-import { rgb } from 'color-convert';
 
 export const storage = new MMKV()
 function InFullBloom(props){
-    const screenHeight = Dimensions.get("screen").height //phone 높이,폭 px
-    const screenWidth = Dimensions.get("screen").width
-    const jsonUser = storage.getString('user') // { 'userName': '박재연', 'point': 0 }
+    const jsonUser = storage.getString('user')
     const userObject = JSON.parse(jsonUser)
-    const dd = storage.getString('user')
-    const isFocused = useIsFocused();
     const navigation = useNavigation()
     const [modalVisible,setModalVisible]=useState(false)
-    const [recycle,setRecycle]=useState(userObject.countRecycle)
-    const [point,setPoint]=useState(userObject.point)
+    
     return(
         <SafeAreaView style={{flex:1, backgroundColor:"rgb(253,246,234)"}}>
             <ImageBackground style={{

@@ -86,6 +86,7 @@ function Main(props){
   }, [isFocused])
 
   useEffect(()=>{
+    console.log("Loading")
     setPoint(userObject.point)
     setRecycle(userObject.countRecycle)
 
@@ -194,10 +195,12 @@ function Main(props){
               <SeedModal
                   seedModalVisible={seedModalVisible}
                   setSeedModalVisible={setSeedModalVisible}
+                  userObject={userObject}
               />
               <Seedfinish
                   finishSeedVisible={finishSeedVisible}
                   setfinishSeedVisible={setfinishSeedVisible}
+                  userObject={userObject}
               />
           </ImageBackground>
       </SafeAreaView>

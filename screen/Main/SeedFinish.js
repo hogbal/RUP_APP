@@ -14,27 +14,16 @@ export const storage = new MMKV()
 import { createPOSTObject, createGETObject } from '../API/Network'
 
 const SeedFinish = (props) => {
-    const { finishSeedVisible, setfinishSeedVisible } = props;
+    const { finishSeedVisible, setfinishSeedVisible, userObject } = props;
+    const [ seedName, setSeedName ] = useState('')
+    const [ seedUri, setSeedUri ] = useState('')
 
-    const [userObject, setUser] = useState({})
-    
-    useEffect(() => {
-        getUser()
-    },[])
-
-    const getUser = async () => {
-        try {
-          const user = await JSON.parse(storage.getString('user'))
-          if(user !== null) {
-            console.log(user)
-            setUser(user)
-            return user
-          }
+    useEffect(()=>{
+        if(userObject.flowerNow.length !== 0) {
+            setSeedName(userObject.flowerNow[0].flowerNickname)
+            setSeedUri(flower[userObject.flowerNow[0].flower].upng)
         }
-        catch (e) {
-          console.error(e)
-        }
-    }
+    },[userObject])
 
     const gotoMoon = () => {
         let data = {
@@ -56,24 +45,6 @@ const SeedFinish = (props) => {
         setfinishSeedVisible(false)
     }
 
-    // const caching = ()=>{
-    // setJsonUser(storage.getString('user'))
-    // setUserObject(JSON.parse(jsonUser))
-    // }
-
-    // useEffect(() => {caching()}, [isFocused]);
-
-    // const gotoMoon = () => {
-    //     for(key in userObject.flowerUri){
-    //        if(userObject.flowerUri[key]==-1){
-    //             userObject.flowerUri[key]=userObject.nowFlowerSeed
-    //             storage.set('user',JSON.stringify(userObject))
-    //             break;
-    //        }
-    //     }
-    //     setSeedModalVisible(true)
-    //     setfinishSeed(false)
-    // }
 return (
     <>
         <Modal
@@ -87,13 +58,11 @@ return (
             <View style={styles.centeredView}>
                 <View style={[styles.modalView]}>
                     <View style={styles.flexThree}>
-                        {/* <Text style={{ color: '#000000' }}>축하합니다! {userObject.flowerNow[0].flowerNickname}이가 모두 자랐어요</Text> */}
-                        <Text style={{ color: '#000000' }}>축하합니다! test이가 모두 자랐어요</Text>
+                        <Text style={{ color: '#000000' }}>축하합니다! {seedName}이가 모두 자랐어요</Text>
                         <Text style={{ color: '#000000' }}>나만의 정원으로 옮겨보세요</Text>
                     </View>
                     <View style={{ marginLeft: '20%' }}>
-                        {/* <Image style={{ width: 170, height: 250 }} source={flower[userObject.flowerNow[0].flower].upng}/> */}
-                        <Image style={{ width: 170, height: 250 }} source={flower[0].upng}/>
+                        <Image style={{ width: 170, height: 250 }} source={seedUri}/>
                     </View>
                     <View style={styles.flexThree}>
                         <View style={{ flexDirection: 'row' }}>

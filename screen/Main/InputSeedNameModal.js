@@ -13,30 +13,13 @@ export const storage = new MMKV()
 import { createPOSTObject, createGETObject } from '../API/Network'
 
 const InputSeedNameModal=(props)=>{
-    const { inputNameModalVisible, setInputNameModalVisible, selectSeed} = props;
+    const { inputNameModalVisible, setInputNameModalVisible, selectSeed, userObject} = props;
     const [seedName,setSeedName]=useState('')
-    const [userObject, setUser] = useState({})
-
-    useEffect(() => {
-        getUser()
-    },[])
-
-    const getUser = async () => {
-        try {
-          const user = await JSON.parse(storage.getString('user'))
-          if(user !== null) {
-            setUser(user)
-            return user
-          }
-        }
-        catch (e) {
-          console.error(e)
-        }
-      }
 
     const closeModal=()=>{
         if(seedName!=='')
         {
+            console.log(userObject)
             let data = {
                 uid:userObject.uid,
                 flower:selectSeed,
