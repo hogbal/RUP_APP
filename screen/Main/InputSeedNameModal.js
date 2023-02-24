@@ -25,7 +25,6 @@ const InputSeedNameModal=(props)=>{
                 flower:selectSeed,
                 flowerNickname:seedName
             }
-            console.log(selectSeed)
             createPOSTObject('flower/add-new-flower', data)
             .then((res) => {
                 return res.json()
