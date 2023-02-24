@@ -83,37 +83,37 @@ function Main(props){
 
   useEffect(()=>{
     getUser()
-    .then((user) => {
-      setPoint(user.point)
-      setRecycle(user.countRecycle)
+  }, [isFocused])
 
-      if((user.flowerNow).length !== 0) {
-        setNowSeedName((user.flowerNow).length===0?'':user.flowerNow[0].flowerNickname)
-        setFlowerDate(flower_day(user))
-        FlowerGIF(user)
-      }
+  useEffect(()=>{
+    setPoint(userObject.point)
+    setRecycle(userObject.countRecycle)
 
-      if(user.calendarDate.length !== 0) {
-        setCalendarDate(user.calendarDate)
+    if((userObject.flowerNow).length !== 0) {
+      setNowSeedName((userObject.flowerNow).length===0?'':userObject.flowerNow[0].flowerNickname)
+      setFlowerDate(flower_day(userObject))
+      FlowerGIF(userObject)
+    }
 
-        for(let date of calendarDate){
-          propcalendarDate.push((date.date).slice(0,10))
-        }
-      }
+    if(userObject.calendarDate.length !== 0) {
+      setCalendarDate(userObject.calendarDate)
+      let data = []
 
-      return user
-    })
-    .then((user) => {
-      if((user.flowerNow).length===0){
-        setSeedModalVisible(true)
+      for(let date of calendarDate){
+        data.push((date.date))
       }
-      else {
-        if(user.flowerNow[0].flowerPoint >= 30) {
-          setfinishSeedVisible(true)
-        }
+      setPropcalendarDate(data)
+    }
+
+    if((userObject.flowerNow).length===0){
+      setSeedModalVisible(true)
+    }
+    else {
+      if(userObject.flowerNow[0].flowerPoint >= 30) {
+        setfinishSeedVisible(true)
       }
-    })
-  }, [])
+    }
+  }, [userObject])
 
   const isSeedName=()=>{
     return <Text style={styles.tulipText}>{nowSeedName}와 함께 {flowerDate}일째</Text>
