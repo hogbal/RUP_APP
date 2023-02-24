@@ -35,6 +35,7 @@ const ProfileImage=()=>{
             const localUri = result.assets[0].uri;
             const uriPath = localUri.split("//").pop();
             setProfileImage("file://"+uriPath)
+
             userObject.profileImgPath="file://"+uriPath
             storage.set('user', JSON.stringify(userObject))
     }
@@ -50,6 +51,7 @@ const ProfileImage=()=>{
             const localUri = result.assets[0].uri;
             const uriPath = localUri.split("//").pop();
             setProfileImage("file://"+uriPath)
+            
             userObject.profileImgPath="file://"+uriPath
             storage.set('user', JSON.stringify(userObject))
             console.log('d ',userObject.profileImgPath)
