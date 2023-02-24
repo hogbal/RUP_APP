@@ -50,7 +50,6 @@ function Notice(){
       return res.json()
     })
     .then((data) => {
-      console.log(data)
       setNoticeTitle(data.title)
       setNotice(data.notice)      
       setPointRecord(data.pointRecord)
