@@ -7,11 +7,11 @@ import {
     Image,
 } from 'react-native';
 import styles from './style'
-import flower from './flower'
+import { flower } from './flower'
 import { MMKV } from 'react-native-mmkv'
 export const storage = new MMKV()
 
-import { createPOSTObject, createGETObject } from '../API/Network'
+import { createPOSTObject } from '../API/Network'
 
 const SeedFinish = (props) => {
     const { finishSeedVisible, setfinishSeedVisible, userObject, setUser } = props;
@@ -35,20 +35,22 @@ const SeedFinish = (props) => {
                 return res.json()
             })
             .then((data) => {
-                let user = userObject
-                let addFlower = userObject.flowerNow[0]
-                addFlower.flowerState = true
+                if(data.success===true){
+                    let user = userObject
+                    let addFlower = userObject.flowerNow[0]
+                    addFlower.flowerState = true
 
-                user.flowerNow = []
-                user.flowerEnds = []
-                for(let value of userObject.flowerEnds) {
-                    user.flowerEnds.push(value)
+                    user.flowerNow = []
+                    user.flowerEnds = []
+                    for(let value of userObject.flowerEnds) {
+                        user.flowerEnds.push(value)
+                    }
+                    user.flowerEnds.push(addFlower)
+                    
+                    setfinishSeedVisible(false)
+                    setUser(user)
+                    storage.set('user', JSON.stringify(user))
                 }
-                user.flowerEnds.push(addFlower)
-                
-                setfinishSeedVisible(false)
-                setUser(user)
-                storage.set('user', JSON.stringify(user))
             })
             .catch(error=>console.log('ERROR',error))
     }

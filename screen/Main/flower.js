@@ -106,4 +106,13 @@ const flower = [
         uri5:{uri:undefined}
     }
   ]
-export default flower
+
+const flowerName = {
+    'flowerA':0,
+    'flowerB':1,
+    'flowerC':2,
+    'flowerD':3,
+    'flowerE':4,
+    'flowerF':5
+}
+export { flower, flowerName }

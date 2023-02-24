@@ -11,6 +11,7 @@ import { MMKV } from 'react-native-mmkv'
 export const storage = new MMKV()
 
 import { createPOSTObject, createGETObject } from '../API/Network'
+import { flowerName } from './flower'
 
 const InputSeedNameModal=(props)=>{
     const { inputNameModalVisible, setInputNameModalVisible, selectSeed, userObject, setUser} = props;
@@ -24,29 +25,31 @@ const InputSeedNameModal=(props)=>{
                 flower:selectSeed,
                 flowerNickname:seedName
             }
-          
+            console.log(selectSeed)
             createPOSTObject('flower/add-new-flower', data)
             .then((res) => {
                 return res.json()
             })
             .then((data) => {
-                let user = userObject
-                let now = new Date()
-                now = now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate()+" "+now.getHours()+":"+now.getMinutes()+":"+now.getSeconds()
+                if(data.success===true){
+                    let user = userObject
+                    let now = new Date()
+                    now = now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate()+" "+now.getHours()+":"+now.getMinutes()+":"+now.getSeconds()
 
-                const flowerNow = {
-                    uid:userObject.uid,
-                    flower:selectSeed,
-                    flowerNickname:seedName,
-                    flowerPoint:0,
-                    flowerState:false,
-                    date:now
+                    const flowerNow = {
+                        uid:userObject.uid,
+                        flower:flowerName[selectSeed],
+                        flowerNickname:seedName,
+                        flowerPoint:0,
+                        flowerState:false,
+                        date:now
+                    }
+                    user.flowerNow = [flowerNow]
+
+                    setInputNameModalVisible(false)
+                    setUser(user)
+                    storage.set('user', JSON.stringify(user))
                 }
-                user.flowerNow = [flowerNow]
-
-                setInputNameModalVisible(false)
-                setUser(user)
-                storage.set('user', JSON.stringify(user))
             })
             .catch(error=>console.log('ERROR',error))
         }
