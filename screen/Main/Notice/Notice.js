@@ -14,43 +14,67 @@ import styles from './style'
 import Notice_modal from './Notice_modal';
 import axios from 'axios'
 import { MMKV } from 'react-native-mmkv'
+import { createPOSTObject, createGETObject } from '../../API/Network'
+
 export const storage = new MMKV()
 
-
 function Notice(){
-  const jsonUser = storage.getString('user') 
-  const userObject = JSON.parse(jsonUser)
-  const [uid,]=useState(userObject.uid)
-
   const [notice,setNotice] = useState()
   const [NoticeTitle,setNoticeTitle] =useState()
   const [pointRecord,setPointRecord] = useState([])
+  const [userObject, setUser] = useState({})
 
   const navigation = useNavigation()
   const isFocused = useIsFocused()
 
+  const getUser = async () => {
+    try {
+      const user = await JSON.parse(storage.getString('user'))
+      if(user !== null) {
+        setUser(user)
+        return user
+      }
+    }
+    catch (e) {
+      console.error(e)
+    }
+  }
+
   useEffect(()=>{
-    getNotice(uid)
-    console.log(notice,"노티스입니다")
-    console.log(NoticeTitle,"타이틀입니다")
+    getUser()
+    .then((user) => {
+      getNotice(user.uid)
+    })
   },[isFocused])
 
   const getNotice=(uid)=>{
-    axios.get('http://13.124.80.15/home/notice-and-point-record', { 
-    params: {
-      uid: uid
-    }
-  })
-  .then(function(response) {
-    console.log(response.data)
-    setNoticeTitle(response.data.title)
-    setNotice(response.data.notice)      
-    setPointRecord(response.data.pointRecord)
-  })
-  .catch(function (error) {
-    console.log(error);
-    console.log('fail')
-  });
+    createGETObject('home/notice-and-point-record',uid)
+    .then((res) => {
+      return res.json()
+    })
+    .then((data) => {
+      console.log(data)
+      setNoticeTitle(data.title)
+      setNotice(data.notice)      
+      setPointRecord(data.pointRecord)
+    })
+    .catch(error=>console.log('ERROR'))
+
+  //   axios.get('http://13.124.80.15/home/notice-and-point-record', { 
+  //   params: {
+  //     uid: uid
+  //   }
+  // })
+  // .then(function(response) {
+  //   console.log(response.data)
+  //   setNoticeTitle(response.data.title)
+  //   setNotice(response.data.notice)      
+  //   setPointRecord(response.data.pointRecord)
+  // })
+  // .catch(function (error) {
+  //   console.log(error);
+  //   console.log('fail')
+  // });
 }
 
   const renderItem = ({item}) => (
