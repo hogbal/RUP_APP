@@ -5,14 +5,11 @@ import {
     TouchableOpacity,
     Image,
     SafeAreaView,
-    Pressable,
-    Modal
 } from 'react-native'
 import BigList from "react-native-big-list";
 import {useNavigation,useIsFocused} from '@react-navigation/native';
 import styles from './style'
 import Notice_modal from './Notice_modal';
-import axios from 'axios'
 import { MMKV } from 'react-native-mmkv'
 import { createPOSTObject, createGETObject } from '../../API/Network'
 
@@ -59,22 +56,6 @@ function Notice(){
       setPointRecord(data.pointRecord)
     })
     .catch(error=>console.log('ERROR'))
-
-  //   axios.get('http://13.124.80.15/home/notice-and-point-record', { 
-  //   params: {
-  //     uid: uid
-  //   }
-  // })
-  // .then(function(response) {
-  //   console.log(response.data)
-  //   setNoticeTitle(response.data.title)
-  //   setNotice(response.data.notice)      
-  //   setPointRecord(response.data.pointRecord)
-  // })
-  // .catch(function (error) {
-  //   console.log(error);
-  //   console.log('fail')
-  // });
 }
 
   const renderItem = ({item}) => (
@@ -132,133 +113,3 @@ function Notice(){
 }
 
 export default Notice
-
-// const Data = [
-//     {
-//       id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//       date: '22.01.01',
-//       point: '1'
-//     },
-//     {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '2'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '3'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '2'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '4'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '5'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-//       {
-//         id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-//         date: '22.01.01',
-//         point: '1'
-//       },
-
-    
-//   ];
