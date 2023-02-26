@@ -112,6 +112,14 @@ const BottomSheet_login = (props) => {
                     onPress={()=>
                     {
                         setModalVisible(false),
+                        navigation.navigate('FindId')
+                    }}>
+                    <Text style={styles.idPage}>아이디를 잊으셨나요?</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                    onPress={()=>
+                    {
+                        setModalVisible(false),
                         navigation.navigate('FindPassword')
                     }}>
                     <Text style={styles.passwordPage}>비밀번호를 잊으셨나요?</Text>

@@ -33,9 +33,13 @@ const styles = StyleSheet.create({
         flex:1,
         alignItems:'center'
     },
-    passwordPage:{
+    idPage:{
         fontWeight:'bold',
         marginTop:20,
+    },
+    passwordPage:{
+        fontWeight:'bold',
+        marginTop:10,
         marginBottom:20,
     },
     sectionStyle: {
